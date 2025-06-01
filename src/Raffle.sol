@@ -149,9 +149,7 @@ contract Raffle is VRFConsumerBaseV2Plus {
      * @notice Picks a winner from the players in the raffle
      * @dev This function should implement the logic to select a winner
      */
-    function performUpkeep(
-        bytes calldata /* performData */
-    ) external onlyIfPlayers {
+    function performUpkeep(bytes calldata /* performData */) external {
         (bool upkeepNeeded, ) = checkUpkeep("");
 
         if (!upkeepNeeded) {
