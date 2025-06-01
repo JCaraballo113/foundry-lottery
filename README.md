@@ -1,66 +1,26 @@
-## Foundry
+## Foundry Lottery
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+A simple lottery contract written in Solidity using Foundry.
 
-Foundry consists of:
+## Overview
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+This project implements a basic lottery system where users can create a lottery, join it, and a winner can be drawn. The contract is designed to be simple and easy to understand, making it suitable for educational purposes.
 
-## Documentation
+## Technologies
 
-https://book.getfoundry.sh/
+-   Solidity
+-   Foundry
+-   Chainlink VRF (for random number generation)
 
-## Usage
+## Features
 
-### Build
+-   Create a lottery
+-   Join a lottery
+-   Draw a winner
 
-```shell
-$ forge build
-```
+## Installation
 
-### Test
-
-```shell
-$ forge test
-```
-
-### Format
-
-```shell
-$ forge fmt
-```
-
-### Gas Snapshots
-
-```shell
-$ forge snapshot
-```
-
-### Anvil
-
-```shell
-$ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+1. Download the repository
+2. `foundry install`
+3. `forge build`
+4. `forge test`

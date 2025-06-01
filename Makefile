@@ -1,0 +1,1 @@
+coverage-report:; forge coverage --report debug > reports/coverage.txt
