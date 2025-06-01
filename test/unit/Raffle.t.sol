@@ -18,6 +18,7 @@ contract RaffleTest is Test {
     bytes32 gasLane;
     uint32 callbackGasLimit;
     uint256 subscriptionId;
+    address expectedWinner = address(1);
 
     /* Contracts */
     Raffle public raffle;
@@ -217,5 +218,49 @@ contract RaffleTest is Test {
             requestId,
             address(raffle)
         );
+    }
+
+    function testFulfillRandomWordsPicksAWinnerAndResetsRaffle()
+        public
+        raffleEntered
+    {
+        // Arrange
+        uint256 additionalEntrants = 3;
+        uint256 startingIndex = 1;
+
+        for (
+            uint256 i = startingIndex;
+            i < additionalEntrants + startingIndex;
+            i++
+        ) {
+            address player = address(uint160(i));
+            hoax(player, 1 ether);
+            raffle.enterRaffle{value: entranceFee}();
+        }
+
+        uint256 startingTimestamp = raffle.getLastTimeStamp();
+        uint256 winnerStartingBalance = expectedWinner.balance;
+
+        // Act
+        vm.recordLogs();
+        raffle.performUpkeep("");
+        Vm.Log[] memory logs = vm.getRecordedLogs();
+        bytes32 requestId = logs[1].topics[1];
+
+        VRFCoordinatorV2_5Mock(vrfCoordinator).fulfillRandomWords(
+            uint256(requestId),
+            address(raffle)
+        );
+
+        // Assert
+        address recentWinner = raffle.getRecentWinner();
+        Raffle.RaffleState raffleState = raffle.getRaffleState();
+        uint256 winnerBalance = recentWinner.balance;
+        uint256 endingTimestamp = raffle.getLastTimeStamp();
+        uint256 prize = entranceFee * (additionalEntrants + 1);
+        assert(recentWinner == expectedWinner);
+        assert(uint256(raffleState) == 0);
+        assert(winnerBalance == winnerStartingBalance + prize);
+        assert(endingTimestamp > startingTimestamp);
     }
 }
