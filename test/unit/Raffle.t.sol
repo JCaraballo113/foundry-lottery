@@ -40,6 +40,14 @@ contract RaffleTest is Test {
         vm.deal(PLAYER, STARTING_PLAYER_BALANCE);
     }
 
+    modifier raffleEntered() {
+        vm.prank(PLAYER);
+        raffle.enterRaffle{value: entranceFee}();
+        vm.warp(block.timestamp + interval + 1); // Move time forward to trigger upkeep
+        vm.roll(block.number + 1); // Move to the next block to allow upkeep to be called
+        _;
+    }
+
     function testRaffleInitializesInOpenState() public view {
         // Check that the raffle is initialized in the OPEN state
         Raffle.RaffleState raffleState = raffle.getRaffleState();
@@ -185,13 +193,10 @@ contract RaffleTest is Test {
         raffle.performUpkeep("");
     }
 
-    function testPerformUpkeepUpdatesRaffleStateAndEmitsRequestId() public {
-        // Arrange
-        vm.prank(PLAYER);
-        raffle.enterRaffle{value: entranceFee}();
-        vm.warp(block.timestamp + interval + 1); // Move time forward to trigger upkeep
-        vm.roll(block.number + 1); // Move to the next block to allow upkeep to be called
-
+    function testPerformUpkeepUpdatesRaffleStateAndEmitsRequestId()
+        public
+        raffleEntered
+    {
         // Act & Assert
         vm.recordLogs();
         raffle.performUpkeep("");
